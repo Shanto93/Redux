@@ -14,17 +14,27 @@ type TInitial = {
   isCompleted: boolean;
 };
 
-type TAction = {
-  type: string;
-  payload: TInitial;
+type TAction =
+  | { type: "addToDo"; payload: TInitial }
+  | { type: "addCompleted"; payload: number };
+
+const typeConstants = {
+  ADD_TODO: "addToDo",
+  ADD_COMPLETED: "addCompleted",
 };
 
 const initialState: TInitial[] = [];
 
-const reducer = (currentState: TInitial[], action: TAction) => {
+const reducer = (currentState: TInitial[], action: TAction): TInitial[] => {
   switch (action.type) {
-    case "addToDo":
+    case typeConstants.ADD_TODO:
       return [...currentState, action.payload];
+    case typeConstants.ADD_COMPLETED:
+      return currentState.map((item) =>
+        item.id === action.payload
+          ? { ...item, isCompleted: !item.isCompleted }
+          : item
+      );
     default:
       return currentState;
   }
